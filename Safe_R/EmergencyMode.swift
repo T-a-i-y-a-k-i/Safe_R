@@ -7,9 +7,9 @@ struct EmergencyMode: View {
     @State private var isShowingPassword = false
     @State private var didTriggerMessage = false
     @Binding var navPath: NavigationPath
+    @State private var messageToSend: String? = nil
     @State private var showMessage = false
     @StateObject private var locationManager = LocationManager()
-    @State private var messageBody = ""
     
     var body: some View {
         VStack(spacing: 20) {
@@ -57,10 +57,12 @@ struct EmergencyMode: View {
             }
         }
         .sheet(isPresented: $showMessage) {
-            MessageComposer(
-                recipients: data.emergencyContacts,
-                body: messageBody
-            )
+            if let message = messageToSend {
+                MessageComposer(
+                    recipients: data.emergencyContacts,
+                    messageText: message
+                )
+            }
         }
     }
     func prepareMessage() {
@@ -70,17 +72,12 @@ struct EmergencyMode: View {
         if let loc = locationManager.location {
             let lat = loc.coordinate.latitude
             let lon = loc.coordinate.longitude
-            
             let mapLink = "https://maps.apple.com/?ll=\(lat),\(lon)"
-            
-            messageBody = """
-            I am in danger, please help.
-            My location: \(mapLink)
-            """
+            messageToSend = "I am in danger. My location: \(mapLink)"
         } else {
-            messageBody = "I am in danger, please help. Location unavailable."
+            messageToSend = "I am in danger. Location unavailable."
         }
-        
+
         showMessage = true
     }
 }

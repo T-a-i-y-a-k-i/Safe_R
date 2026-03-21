@@ -4,12 +4,12 @@ import CoreLocation
 
 struct MessageComposer: UIViewControllerRepresentable {
     var recipients: [String]
-    var body: String
+    var messageText: String
 
     func makeUIViewController(context: Context) -> MFMessageComposeViewController {
         let controller = MFMessageComposeViewController()
         controller.recipients = recipients
-        controller.body = body
+        controller.body = messageText
         controller.messageComposeDelegate = context.coordinator
         return controller
     }
