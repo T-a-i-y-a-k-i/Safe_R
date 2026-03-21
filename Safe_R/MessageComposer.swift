@@ -1,5 +1,6 @@
 import SwiftUI
 import MessageUI
+import CoreLocation
 
 struct MessageComposer: UIViewControllerRepresentable {
     var recipients: [String]

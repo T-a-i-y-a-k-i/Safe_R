@@ -2,6 +2,7 @@ import SwiftUI
 struct ContentView: View {
     @ObservedObject var data: AppData
     @Binding var navPath: NavigationPath
+    
 
     var body: some View {
         ZStack {

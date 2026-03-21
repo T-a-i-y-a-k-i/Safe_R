@@ -1,5 +1,6 @@
 import SwiftUI
 import MessageUI
+import CoreLocation
 
 struct EmergencyMode: View {
     @ObservedObject var data: AppData
@@ -7,7 +8,9 @@ struct EmergencyMode: View {
     @State private var didTriggerMessage = false
     @Binding var navPath: NavigationPath
     @State private var showMessage = false
-
+    @StateObject private var locationManager = LocationManager()
+    @State private var messageBody = ""
+    
     var body: some View {
         VStack(spacing: 20) {
             Text("Emergency Mode Activated")
@@ -15,13 +18,13 @@ struct EmergencyMode: View {
                 .font(.system(size: 35, weight: .bold))
                 .foregroundColor(.white)
                 .padding(.horizontal, 30)
-
+            
             Text("Notifications are being sent to your emergency contacts.")
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 30)
                 .font(.system(size: 20))
                 .foregroundColor(.white)
-
+            
             Button(action: {
                 isShowingPassword = true
             }) {
@@ -34,7 +37,7 @@ struct EmergencyMode: View {
                     .cornerRadius(8)
             }
             .padding(.horizontal, 50)
-
+            
             NavigationLink(destination: Password(data: data), isActive: $isShowingPassword) {
                 EmptyView()
             }
@@ -46,16 +49,38 @@ struct EmergencyMode: View {
             if !didTriggerMessage {
                 didTriggerMessage = true
                 
-                if MFMessageComposeViewController.canSendText() && !data.emergencyContacts.isEmpty {
-                    showMessage = true
+                locationManager.requestLocation()
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    prepareMessage()
                 }
             }
         }
         .sheet(isPresented: $showMessage) {
             MessageComposer(
                 recipients: data.emergencyContacts,
-                body: "I am in danger, please help."
+                body: messageBody
             )
         }
+    }
+    func prepareMessage() {
+        guard MFMessageComposeViewController.canSendText(),
+              !data.emergencyContacts.isEmpty else { return }
+        
+        if let loc = locationManager.location {
+            let lat = loc.coordinate.latitude
+            let lon = loc.coordinate.longitude
+            
+            let mapLink = "https://maps.apple.com/?ll=\(lat),\(lon)"
+            
+            messageBody = """
+            I am in danger, please help.
+            My location: \(mapLink)
+            """
+        } else {
+            messageBody = "I am in danger, please help. Location unavailable."
+        }
+        
+        showMessage = true
     }
 }
