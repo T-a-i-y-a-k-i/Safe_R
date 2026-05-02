@@ -69,7 +69,7 @@ struct ContentView: View {
                     .font(.system(size: 17))
                     .fixedSize(horizontal: false, vertical: true)
 
-                NavigationLink(destination: EmergencyMode(data: data, navPath: $navPath), isActive: $data.isShowingEmergency) {
+                NavigationLink(destination: EmergencyMode(data: data), isActive: $data.isShowingEmergency) {
                     EmptyView()
                 }
             }

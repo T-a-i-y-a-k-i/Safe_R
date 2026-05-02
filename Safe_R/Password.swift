@@ -1,4 +1,34 @@
 import SwiftUI
+import LocalAuthentication
+
+func authenticateUser(completion: @escaping (Bool) -> Void) {
+    let context = LAContext()
+
+    print("AUTH: starting authentication")
+
+    var error: NSError?
+
+    if context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) {
+
+        let reason = "Authenticate to cancel emergency"
+
+        context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason) { success, authenticationError in
+
+            DispatchQueue.main.async {
+                print("AUTH: result =", success)
+                if let authenticationError = authenticationError {
+                    print("AUTH ERROR:", authenticationError.localizedDescription)
+                }
+                completion(success)
+            }
+        }
+
+    } else {
+        print("AUTH: cannot evaluate policy:", error?.localizedDescription ?? "unknown error")
+        completion(false)
+    }
+}
+
 struct Password: View {
     @Environment(\.dismiss) var dismiss
     @ObservedObject var data: AppData
