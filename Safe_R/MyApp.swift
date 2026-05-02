@@ -2,9 +2,11 @@ import SwiftUI
 struct ContentView: View {
     @ObservedObject var data: AppData
     @Binding var navPath: NavigationPath
+    @EnvironmentObject var locationManager: LocationManager
     
 
     var body: some View {
+        
         ZStack {
             Color.white.ignoresSafeArea()
             VStack(spacing: 20) {
@@ -18,6 +20,16 @@ struct ContentView: View {
                             .frame(width: 60, height: 60)
                     }
                     Spacer()
+                    
+                    NavigationLink {
+                            AboutView()
+                    } label: {
+                        Image("Hamburger_icon.svg")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 40, height: 40)
+                            .foregroundColor(.gray)
+                    }
                 }
                 .padding(.horizontal, 30)
                 .padding(.top, 60)
@@ -48,6 +60,7 @@ struct ContentView: View {
                     }
                     .frame(height: 300)
                 }
+                
 
                 Text("Press this button in the case of an emergency. A notification and your live location will be sent to your emergency contacts informing them you need help.")
                     .foregroundColor(.black)
@@ -59,6 +72,9 @@ struct ContentView: View {
                 NavigationLink(destination: EmergencyMode(data: data, navPath: $navPath), isActive: $data.isShowingEmergency) {
                     EmptyView()
                 }
+            }
+            .onAppear {
+                locationManager.requestPermission()
             }
         }
     }

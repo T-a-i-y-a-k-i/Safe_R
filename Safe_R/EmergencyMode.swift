@@ -2,14 +2,21 @@ import SwiftUI
 import MessageUI
 import CoreLocation
 
+struct MessageData: Identifiable {
+    let id = UUID()
+    let text: String
+}
+
 struct EmergencyMode: View {
     @ObservedObject var data: AppData
     @State private var isShowingPassword = false
     @State private var didTriggerMessage = false
     @Binding var navPath: NavigationPath
-    @State private var messageToSend: String? = nil
-    @State private var showMessage = false
+    @State private var showCannotMessageAlert = false
     @StateObject private var locationManager = LocationManager()
+    @State private var hasSent = false
+    @State private var isLoadingLocation = true
+    @State private var messageToSend: MessageData? = nil
     
     var body: some View {
         VStack(spacing: 20) {
@@ -38,6 +45,14 @@ struct EmergencyMode: View {
             }
             .padding(.horizontal, 50)
             
+            if isLoadingLocation {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+                    .tint(.white)
+                    .scaleEffect(1.5)
+                    .padding(.top, 10)
+            }
+            
             NavigationLink(destination: Password(data: data), isActive: $isShowingPassword) {
                 EmptyView()
             }
@@ -45,39 +60,66 @@ struct EmergencyMode: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.red)
         .ignoresSafeArea()
+        
+        .alert("Messaging Unavailable", isPresented: .constant(true)) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text("This device cannot send SMS messages.")
+        }
+    
+        
         .onAppear {
-            if !didTriggerMessage {
-                didTriggerMessage = true
-                
-                locationManager.requestLocation()
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    prepareMessage()
+            guard !didTriggerMessage else { return }
+            didTriggerMessage = true
+            
+            guard !data.emergencyContacts.isEmpty else {
+                print("No emergency contacts set")
+                return
+            }
+            
+            locationManager.requestLocation()
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                if !hasSent {
+                    hasSent = true
+                    isLoadingLocation = false
+                    
+                    DispatchQueue.main.async {
+                        messageToSend = MessageData(
+                            text: "I am in danger. Location unavailable."
+                        )
+                    }
                 }
             }
         }
-        .sheet(isPresented: $showMessage) {
-            if let message = messageToSend {
-                MessageComposer(
-                    recipients: data.emergencyContacts,
-                    messageText: message
-                )
-            }
-        }
-    }
-    func prepareMessage() {
-        guard MFMessageComposeViewController.canSendText(),
-              !data.emergencyContacts.isEmpty else { return }
         
-        if let loc = locationManager.location {
+        .onChange(of: locationManager.location) {  newLocation in
+            guard let loc = newLocation, !hasSent else { return }
+            
+            hasSent = true
+            isLoadingLocation = false
+            
             let lat = loc.coordinate.latitude
             let lon = loc.coordinate.longitude
             let mapLink = "https://maps.apple.com/?ll=\(lat),\(lon)"
-            messageToSend = "I am in danger. My location: \(mapLink)"
-        } else {
-            messageToSend = "I am in danger. Location unavailable."
+            
+            DispatchQueue.main.async {
+                messageToSend = MessageData(
+                    text: "I am in danger. My location: \(mapLink)"
+                )
+            }
         }
-
-        showMessage = true
+        
+        .sheet(item: $messageToSend) { message in
+                if MFMessageComposeViewController.canSendText() {
+                    MessageComposer(
+                        recipients: data.emergencyContacts,
+                        messageText: message.text
+                    )
+                } else {
+                    Text("This device cannot send messages.")
+                }
+            
+            }
+        }
     }
-}

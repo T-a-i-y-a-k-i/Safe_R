@@ -2,6 +2,7 @@
 import Foundation
 import CoreLocation
 import Combine
+import UIKit
 
 class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     
@@ -22,6 +23,10 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         location = locations.first
+    }
+    
+    func requestPermission() {
+        manager.requestWhenInUseAuthorization()
     }
 }
  
