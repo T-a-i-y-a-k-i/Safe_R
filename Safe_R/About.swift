@@ -8,7 +8,7 @@ struct AboutView: View {
                 
                 VStack(alignment: .leading, spacing: 4) {
                     HStack {
-                        Text("Developer, Code")
+                        Text("Developer")
                         Spacer()
                         Text("Avery McComas")
                             .foregroundColor(.gray)
@@ -21,7 +21,7 @@ struct AboutView: View {
                 .padding(.vertical, 4)
                 
                 HStack {
-                    Text("Marketing")
+                    Text("Product Owner")
                     Spacer()
                     Text("Rose Houssain")
                         .foregroundColor(.gray)

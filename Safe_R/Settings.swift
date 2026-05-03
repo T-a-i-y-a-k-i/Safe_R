@@ -12,35 +12,7 @@ struct Settings: View {
 
             ScrollView {
                 VStack(spacing: 20) {
-                    Text("Set New Password")
-                        .font(.title)
-                        .bold()
-                        .multilineTextAlignment(.center)
-
-                    SecureField("Enter new password", text: $newPassword)
-                        .padding()
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(8)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color.black.opacity(0.3), lineWidth: 1)
-                        )
-                        .padding(.horizontal, 40)
-
-                    Button("Save Password") {
-                        guard !newPassword.isEmpty else { return }
-                        data.password = newPassword
-                        newPassword = ""
-                    }
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.black)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-                    .padding(.horizontal, 40)
-
-                    Divider().padding(.vertical)
-
+                    
                     Text("Emergency Contacts")
                         .font(.title2)
                         .bold()
