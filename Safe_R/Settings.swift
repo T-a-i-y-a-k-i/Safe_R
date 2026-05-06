@@ -8,7 +8,7 @@ struct Settings: View {
 
     var body: some View {
         ZStack {
-            Color.gray.ignoresSafeArea()
+            Color(red: 0.706, green: 0.675, blue: 0.675).ignoresSafeArea()
 
             ScrollView {
                 VStack(spacing: 20) {
@@ -16,11 +16,12 @@ struct Settings: View {
                     Text("Emergency Contacts")
                         .font(.title2)
                         .bold()
+                        .foregroundColor(Color(red: 0.624, green: 0.200, blue: 0.200))
 
                     HStack {
                         TextField("Enter phone number", text: $newContact)
                             .padding()
-                            .background(Color.white)
+                            .background(Color(red: 0.945, green: 0.937, blue: 0.906))
                             .cornerRadius(8)
 
                         Button("Add") {
@@ -60,7 +61,7 @@ struct Settings: View {
                                 contacts.removeAll { $0 == contact }
                                 data.emergencyContacts = contacts
                             }
-                            .foregroundColor(.red)
+                            .foregroundColor(Color(red: 0.624, green: 0.200, blue: 0.200))
                         }
                         .padding(.horizontal, 40)
                     }
@@ -68,7 +69,6 @@ struct Settings: View {
                 .padding(.vertical, 30)
             }
 
-            // Error banner overlay
             if showErrorBanner {
                 VStack {
                     Text("Invalid phone number")

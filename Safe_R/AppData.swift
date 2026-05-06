@@ -5,7 +5,7 @@ class AppData: ObservableObject {
     @AppStorage("password") var password: String = "0000"
     
     @Published var circleColor: Color = Color(red: 0.62, green: 0.20, blue: 0.20)
-    @Published var textColor: Color = .white
+    @Published var textColor: Color = Color(red: 0.945, green: 0.937, blue: 0.906)
     @Published var isShowingEmergency = false
     @Published var isShowingPassword = false
     @Published var isShowingSettings = false

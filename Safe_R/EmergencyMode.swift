@@ -1,14 +1,18 @@
 import SwiftUI
 import MessageUI
 import CoreLocation
+import UIKit
+
+// MARK: - Color Theme
+extension Color {
+    static let emergencyRed = Color(red: 159/255, green: 51/255, blue: 51/255) // #9F3333
+    static let softWhite = Color(red: 241/255, green: 239/255, blue: 231/255)  // #F1EFE7
+}
 
 struct MessageData: Identifiable {
     let id = UUID()
     let text: String
 }
-
-import MessageUI
-import UIKit
 
 final class SMSHelper: NSObject, MFMessageComposeViewControllerDelegate {
     static let shared = SMSHelper()
@@ -58,14 +62,14 @@ struct EmergencyMode: View {
             Text("Emergency Mode Activated")
                 .multilineTextAlignment(.center)
                 .font(.system(size: 35, weight: .bold))
-                .foregroundColor(.white)
+                .foregroundColor(.softWhite)
                 .padding(.horizontal, 30)
 
             Text("Notifications are being sent to your emergency contacts.")
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 30)
                 .font(.system(size: 20))
-                .foregroundColor(.white)
+                .foregroundColor(.softWhite)
 
             Button("Cancel") {
                 print("CANCEL: tapped")
@@ -75,7 +79,6 @@ struct EmergencyMode: View {
                         print("CANCEL: auth result =", success)
 
                         if success {
-
                             SMSHelper.shared.sendMessage(
                                 recipients: data.emergencyContacts,
                                 body: "I am safe now. Emergency cancelled."
@@ -89,18 +92,19 @@ struct EmergencyMode: View {
                     }
                 }
             }
+            .foregroundColor(.softWhite)
             .padding(.horizontal, 50)
 
             if isLoadingLocation {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle())
-                    .tint(.white)
+                    .tint(.softWhite)
                     .scaleEffect(1.5)
                     .padding(.top, 10)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.red)
+        .background(Color.emergencyRed)
         .ignoresSafeArea()
 
         // MARK: - Start emergency flow
@@ -147,7 +151,6 @@ struct EmergencyMode: View {
                 text: "I am in danger. My location: \(mapLink)"
             )
 
-            // IMPORTANT: delay prevents SwiftUI presentation conflict
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
                 messageToSend = pendingMessage
             }

@@ -11,12 +11,12 @@ struct AboutView: View {
                         Text("Developer")
                         Spacer()
                         Text("Avery McComas")
-                            .foregroundColor(.gray)
+                            .foregroundColor(Color(red: 180/255, green: 172/255, blue: 172/255))
                     }
                     
                     Link("github.com/t-a-i-y-a-k-i", destination: URL(string: "https://github.com/t-a-i-y-a-k-i")!)
                         .font(.footnote)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color(red: 180/255, green: 172/255, blue: 172/255))
                 }
                 .padding(.vertical, 4)
                 
@@ -24,7 +24,7 @@ struct AboutView: View {
                     Text("Product Owner")
                     Spacer()
                     Text("Rose Houssain")
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color(red: 180/255, green: 172/255, blue: 172/255))
                 }
             }
             
@@ -42,7 +42,7 @@ struct AboutView: View {
                         .bold()
                     
                     Text("Version \(appVersion)")
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color(red: 180/255, green: 172/255, blue: 172/255))
                     
                     Text("Safe_R helps you quickly send your location to trusted contacts in an emergency.")
                         .font(.body)
@@ -67,16 +67,12 @@ struct AboutView: View {
             }
             .frame(maxWidth: .infinity)
         }
+        .scrollContentBackground(.hidden) 
+        .background(Color(red: 180/255, green: 172/255, blue: 172/255))
         .navigationTitle("About")
     }
     
     var appVersion: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
-    }
-}
-
-#Preview {
-    NavigationStack {
-        AboutView()
     }
 }

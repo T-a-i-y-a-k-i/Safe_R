@@ -8,7 +8,7 @@ struct ContentView: View {
     var body: some View {
         
         ZStack {
-            Color.white.ignoresSafeArea()
+            Color(red: 0.945, green: 0.937, blue: 0.906).ignoresSafeArea()
             VStack(spacing: 20) {
                 HStack {
                     NavigationLink {
@@ -39,6 +39,7 @@ struct ContentView: View {
                 Text("EMERGENCY ALARM")
                     .font(.system(size: 35, weight: .bold))
                     .multilineTextAlignment(.center)
+                    .foregroundColor(Color(red: 0.706, green: 0.675, blue: 0.675))
 
                 ZStack {
                     GeometryReader { geo in
@@ -63,7 +64,7 @@ struct ContentView: View {
                 
 
                 Text("Press this button in the case of an emergency. A notification and your live location will be sent to your emergency contacts informing them you need help.")
-                    .foregroundColor(.black)
+                    .foregroundColor(Color(red: 0.706, green: 0.675, blue: 0.675))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 30)
                     .font(.system(size: 17))
